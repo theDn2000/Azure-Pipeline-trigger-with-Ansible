@@ -1,0 +1,27 @@
+---
+- name: Obtener lista de pipelines desde Azure DevOps
+  hosts: localhost
+  tasks:
+    - name: Obtener token de acceso a Azure DevOps
+      uri:
+        url: "https://app.vssps.visualstudio.com/_apis/Token/SessionTokens?api-version=6.0-preview.1"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          access_token: "{{ azure_devops_personal_access_token }}"
+      register: token_result
+      no_log: true
+
+    - name: Obtener lista de pipelines
+      uri:
+        url: "https://flxsolutions.visualstudio.com/{{ azure_devops_organization }}/{{ azure_devops_project }}/_apis/pipelines?api-version=6.0-preview.1"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ token_result.json.data.token }}"
+      register: pipelines_result
+
+    - name: Mostrar lista de pipelines
+      debug:
+        var: pipelines_result.json
