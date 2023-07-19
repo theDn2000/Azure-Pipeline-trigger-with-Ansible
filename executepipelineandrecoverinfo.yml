@@ -4,10 +4,19 @@
   tasks:
     - name: Ejecutar pipeline
       azure_devops_pipeline_run:
-        org_url: https://dev.azure.com/<organization>
-        project: <nombre_del_proyecto>
-        pat: <token_de_acceso_personal>
-        pipeline_id: <ID_del_pipeline>
+        org_url: https://flxsolutions.visualstudio.com/
+        #org_url: https://dev.azure.com/<organization>
+        # El proyecto se llama AutomationTools
+        project: AutomationTools
+        #project: <nombre_del_proyecto>
+        pat: 7nicog3evb5lnxwmrojb5jhmx7bohhzug7jtxao77hkubtwaq7aq
+        #pat: <token_de_acceso_personal>
+        pipeline_id: CreateAzSubscription
+        #pipeline_id: <ID_del_pipeline>
+        variables:
+          variable1: valor1
+          variable2: valor2
+          # ... Pendiente según las variables del pipeline
       register: pipeline_result
 
     - name: Esperar a que el pipeline termine
@@ -20,10 +29,15 @@
 
     - name: Obtener resultados del pipeline
       azure_devops_pipeline_info:
-        org_url: https://dev.azure.com/<organization>
-        project: <nombre_del_proyecto>
-        pat: <token_de_acceso_personal>
-        pipeline_id: <ID_del_pipeline>
+        org_url: https://flxsolutions.visualstudio.com/
+        #org_url: https://dev.azure.com/<organization>
+        # El proyecto se llama AutomationTools
+        project: AutomationTools
+        #project: <nombre_del_proyecto>
+        pat: 7nicog3evb5lnxwmrojb5jhmx7bohhzug7jtxao77hkubtwaq7aq
+        #pat: <token_de_acceso_personal>
+        pipeline_id: CreateAzSubscription
+        #pipeline_id: <ID_del_pipeline>
         job_id: "{{ pipeline_result.pipeline_job.id }}"
       register: pipeline_info
 
