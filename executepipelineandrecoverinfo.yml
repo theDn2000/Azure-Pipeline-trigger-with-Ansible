@@ -1,0 +1,32 @@
+---
+- name: Ejecutar proyecto de Azure Pipeline y recuperar output
+  hosts: localhost
+  tasks:
+    - name: Ejecutar pipeline
+      azure_devops_pipeline_run:
+        org_url: https://dev.azure.com/<organization>
+        project: <nombre_del_proyecto>
+        pat: <token_de_acceso_personal>
+        pipeline_id: <ID_del_pipeline>
+      register: pipeline_result
+
+    - name: Esperar a que el pipeline termine
+      async_status:
+        jid: "{{ pipeline_result.pipeline_job.jid }}"
+      register: job_result
+      until: job_result.finished
+      retries: 120
+      delay: 10
+
+    - name: Obtener resultados del pipeline
+      azure_devops_pipeline_info:
+        org_url: https://dev.azure.com/<organization>
+        project: <nombre_del_proyecto>
+        pat: <token_de_acceso_personal>
+        pipeline_id: <ID_del_pipeline>
+        job_id: "{{ pipeline_result.pipeline_job.id }}"
+      register: pipeline_info
+
+    - name: Mostrar el resultado del pipeline
+      debug:
+        var: pipeline_info
